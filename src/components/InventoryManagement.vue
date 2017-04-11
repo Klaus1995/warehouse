@@ -225,8 +225,16 @@
 						},1000);
 						vm.$store.state.inventoryManagement = res.data.information.inventoryManagement;
 						vm.$store.state.inventoryInformation = res.data.information.inventoryInformation;
-						vm.inventoryManagement.company = '';
-						vm.inventoryManagement.name = '';
+						vm.selectedSupplier = {
+							company : '',
+							person : '',
+							telphone : ''
+						};
+						vm.selectedCommodity = {
+							name : '',
+							specification : '',
+							unit : ''
+						};
 						vm.inventoryManagement.price = '';
 						vm.inventoryManagement.quantity = '';
 						vm.inventoryManagement.date = '';
