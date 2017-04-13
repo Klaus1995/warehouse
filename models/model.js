@@ -1,7 +1,7 @@
 var mongoose = require('mongoose');
 
 
-var schema = mongoose.Schema({
+var schema = new mongoose.Schema({
 	flag : Boolean,
 	user : {type : String, required : true, unique : true},
 	password : {type : String, required : true},

@@ -21,14 +21,14 @@ function register(body,res){
 	let newUser = new model({
 		flag:true,
 		user:body.user,
-		password:body.password
+		password:body.password,
 	});
 	newUser.save(function(error){
 		if(error){
 			console.log(error);
-			res.send('注册失败,用户名已存在');
+			res.send({flag:false});
 		}else {
-			res.send('注册成功');			
+			res.send({flag:true});			
 		};
 	});
 }

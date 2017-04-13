@@ -11,7 +11,6 @@ var port = 3000;
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-//app.use(express.static('dist'));
 
 //连接数据库
 mongoose.connect('mongodb://localhost:27017/mongotest');
@@ -22,9 +21,6 @@ db.once('open',function(){console.log('mongodb connection sucess')});
 
 
 //设置路由
-// app.get('/',function(req,res){
-// 	res.sendFile('./dist/index.html');
-// });
 app.get('/',function(req,res){
 	res.redirect('http://localhost:8080');
 });

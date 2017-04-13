@@ -1,10 +1,15 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Home from '@/components/Home'
-import BasicInformation from '@/components/BasicInformation'
-import InformationQuery from '@/components/InformationQuery'
-import InventoryManagement from '@/components/InventoryManagement'
-import UserManagement from '@/components/UserManagement'
+import Login from '@/components/Login'
+import Register from '@/components/Register'
+import Commodity from '@/components/Commodity'
+import Client from '@/components/Client'
+import Supplier from '@/components/Supplier'
+import Enter from '@/components/Enter'
+import Out from '@/components/Out'
+import Inventory from '@/components/Inventory'
+import ModifyPassword from '@/components/ModifyPassword'
+import DeleteUser from '@/components/DeleteUser'
 import About from '@/components/About'
 
 Vue.use(Router)
@@ -14,27 +19,57 @@ export default new Router({
     {
       path: '/',
       name: 'Home',
-      component: Home
+      component: Login
     },
     {
-      path: '/BasicInformation',
-      name: 'BasicInformation',
-      component: BasicInformation
+      path: '/Login',
+      name: 'Login',
+      component: Login
     },
     {
-      path: '/InventoryManagement',
-      name: 'InventoryManagement',
-      component: InventoryManagement
+      path: '/Register',
+      name: 'Register',
+      component: Register
     },
     {
-      path: '/InformationQuery',
-      name: 'InformationQuery',
-      component: InformationQuery
+      path: '/Commodity',
+      name: 'Commodity',
+      component: Commodity
     },
     {
-      path: '/UserManagement',
-      name: 'UserManagement',
-      component: UserManagement
+      path: '/Client',
+      name: 'Client',
+      component: Client
+    },
+    {
+      path: '/Supplier',
+      name: 'Supplier',
+      component: Supplier
+    },
+    {
+      path: '/Enter',
+      name: 'Enter',
+      component: Enter
+    },
+    {
+      path: '/Out',
+      name: 'Out',
+      component: Out
+    },
+    {
+      path: '/Inventory',
+      name: 'Inventory',
+      component: Inventory
+    },
+    {
+      path: '/ModifyPassword',
+      name: 'ModifyPassword',
+      component: ModifyPassword
+    },
+    {
+      path: '/DeleteUser',
+      name: 'DeleteUser',
+      component: DeleteUser
     },
     {
       path: '/About',

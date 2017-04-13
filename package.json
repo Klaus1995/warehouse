@@ -1,6 +1,6 @@
 {
   "name": "warehouse",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "A Vue.js project",
   "author": "Klaus1995 <839887585@qq.com>",
   "private": true,
@@ -12,6 +12,7 @@
     "axios": "^0.16.0",
     "body-parser": "^1.17.1",
     "express": "^4.15.2",
+    "iview": "^2.0.0-rc.10",
     "mongoose": "^4.9.3",
     "vue": "^2.2.2",
     "vue-router": "^2.2.0",

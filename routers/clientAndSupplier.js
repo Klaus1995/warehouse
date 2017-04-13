@@ -4,87 +4,60 @@ var model = require('../models/model.js');
 
 
 //保存或者修改客户/供应商信息
-function saveClient(body,res){
+//第三个参数为保存类型，客户为true，供应商为false
+function save(body,res,type){
 	model.findOne({'user':body.user},function(error,doc){
 		let client = doc.information.basicInformation.client;
 		let supplier = doc.information.basicInformation.supplier;
-		if(!body.supplier&&!body.modify){
-			client.push({
-				company:body.company,
-				person:body.person,
-				address:body.address,
-				city:body.city,
-				area:body.area,
-				postcode:body.postcode,
-				telphone:body.telphone,
-				fax:body.fax,
-				homepage:body.homepage
-			});
-		}else if(body.supplier&&!body.modify){
-			supplier.push({
-				company:body.company,
-				person:body.person,
-				address:body.address,
-				city:body.city,
-				area:body.area,
-				postcode:body.postcode,
-				telphone:body.telphone,
-				fax:body.fax,
-				homepage:body.homepage
-			});
-		}else if(!body.supplier&&body.modify){
-			client[body.index] = {
-				company:body.company,
-				person:body.person,
-				address:body.address,
-				city:body.city,
-				area:body.area,
-				postcode:body.postcode,
-				telphone:body.telphone,
-				fax:body.fax,
-				homepage:body.homepage
-			}
-		}else if(body.supplier&&body.modify){
-			supplier[body.index] = {
-				company:body.company,
-				person:body.person,
-				address:body.address,
-				city:body.city,
-				area:body.area,
-				postcode:body.postcode,
-				telphone:body.telphone,
-				fax:body.fax,
-				homepage:body.homepage
-			}
+		let position = type?client:supplier;
+		if(!body.modify){
+			position.push(body.information);
+		}else if(body.modify){
+			position[body.index] = body.information;
 		};
 		doc.save(function(err,doc){
-			if(err){console.log(err)};
-			res.send(doc.information.basicInformation);
+			if(err){
+				console.log(err);
+				res.send({flag:false});
+			}else{
+				res.send({flag:true,information:doc.information.basicInformation});
+			}
 		});
 	});
 }
 
 
 //删除供应商/客户信息
-function delClient(body){
+//第三个参数为保存类型，客户为true，供应商为false
+function del(body,res,type){
 	model.findOne({'user':body.user},function(error,doc){
-		let position = '';
-		if(body.delType==='client'){
-			position = doc.information.basicInformation.client;
-		}else if(body.delType==='supplier'){
-			position = doc.information.basicInformation.supplier;
-		}
+		let client = doc.information.basicInformation.client;
+		let supplier = doc.information.basicInformation.supplier;
+		let position = type?client:supplier;
 		position.splice(body.delIndex,1);
-		doc.save();
+		doc.save(function(err,doc){
+			if(err){
+				console.log(err);
+				res.send({flag:false});
+			}else{
+				res.send({flag:true});
+			}
+		});
 	});
 }
 
 
 router.post('/saveClient',function(req,res){
-	saveClient(req.body,res);
+	save(req.body,res,true);
+});
+router.post('/saveSupplier',function(req,res){
+	save(req.body,res,false);
 });
 router.post('/delClient',function(req,res){
-	delClient(req.body);
+	del(req.body,res,true);
+});
+router.post('/delSupplier',function(req,res){
+	del(req.body,res,false);
 });
 
 
