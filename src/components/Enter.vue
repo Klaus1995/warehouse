@@ -5,27 +5,30 @@
             <Menu-item name="modify">查看入库信息列表</Menu-item>
         </Menu>
 
-
         <Row type="flex" justify="center" class="content" v-if="menu==='add'">
             <Col span="12">
                 <Form ref="enterForm" :model="enterForm" :rules="enterRules" :label-width="100">
                     <Form-item label="供应商" prop="company">
-                        <Input type="text" v-model="enterForm.company"></Input>
+                        <Select @on-change="selectSupplier" filterable>
+                            <Option v-for="(item,index) in $store.state.basicInformation.supplier" :value="index" :key="index">{{item.company}}</Option>
+                        </Select>
                     </Form-item>
                     <Form-item label="联系人" prop="person">
-                        <Input type="text" v-model="enterForm.person"></Input>
+                        <Input type="text" v-model="enterForm.person" disabled></Input>
                     </Form-item>
                     <Form-item label="联系电话" prop="telphone">
-                        <Input type="text" v-model="enterForm.telphone"></Input>
+                        <Input type="text" v-model="enterForm.telphone" disabled></Input>
                     </Form-item>
                     <Form-item label="商品名称" prop="name">
-                        <Input type="text" v-model="enterForm.name"></Input>
+                        <Select @on-change="selectCommodity" filterable>
+                            <Option v-for="(item,index) in $store.state.basicInformation.commodity" :value="index" :key="index">{{item.name}}</Option>
+                        </Select>
                     </Form-item>
                     <Form-item label="商品规格" prop="specification">
-                        <Input type="text" v-model="enterForm.specification"></Input>
+                        <Input type="text" v-model="enterForm.specification" disabled></Input>
                     </Form-item>
                     <Form-item label="商品单位" prop="unit">
-                        <Input type="text" v-model="enterForm.unit"></Input>
+                        <Input type="text" v-model="enterForm.unit" disabled></Input>
                     </Form-item>
                     <Form-item label="入库价格" prop="price">
                         <Input-number :min="0" v-model="enterForm.price" style="width: 100%"></Input-number>
@@ -45,45 +48,45 @@
         </Row>
 
 
-        <Row type="flex" justify="center" class="content" v-if="menu==='modify'">
+        <Row type="flex" justify="center" class="content" v-show="menu==='modify'">
             <Col span="22">
                 <Table highlight-row border :context="self" :columns="columns" :data="$store.state.inventoryManagement.enterInventory"></Table>
             </Col>
         </Row>
 
-        <Modal v-model="confirmModifyFlag" @on-cancel="cancel(enterForm)">
+        <Modal v-model="confirmModifyFlag" @on-cancel="cancel(modifyForm)">
             <p slot="header" style="color:#3399ff;text-align:center">
                 <Icon type="edit"></Icon>
                 <span>修改信息</span>
             </p>
             <div style="text-align:center">
-                <Form ref="enterForm" :model="enterForm" :rules="enterRules" :label-width="100">
+                <Form ref="modifyForm" :model="modifyForm" :rules="enterRules" :label-width="100">
                     <Form-item label="供应商" prop="company">
-                        <Input type="text" v-model="enterForm.company"></Input>
+                        <Input type="text" v-model="modifyForm.company"></Input>
                     </Form-item>
                     <Form-item label="联系人" prop="person">
-                        <Input type="text" v-model="enterForm.person"></Input>
+                        <Input type="text" v-model="modifyForm.person"></Input>
                     </Form-item>
                     <Form-item label="联系电话" prop="telphone">
-                        <Input type="text" v-model="enterForm.telphone"></Input>
+                        <Input type="text" v-model="modifyForm.telphone"></Input>
                     </Form-item>
                     <Form-item label="商品名称" prop="name">
-                        <Input type="text" v-model="enterForm.name"></Input>
+                        <Input type="text" v-model="modifyForm.name"></Input>
                     </Form-item>
                     <Form-item label="商品规格" prop="specification">
-                        <Input type="text" v-model="enterForm.specification"></Input>
+                        <Input type="text" v-model="modifyForm.specification"></Input>
                     </Form-item>
                     <Form-item label="商品单位" prop="unit">
-                        <Input type="text" v-model="enterForm.unit"></Input>
+                        <Input type="text" v-model="modifyForm.unit"></Input>
                     </Form-item>
                     <Form-item label="入库价格" prop="price">
-                        <Input-number :min="0" v-model="enterForm.price" style="width: 100%"></Input-number>
+                        <Input-number :min="0" v-model="modifyForm.price" style="width: 100%"></Input-number>
                     </Form-item>
                     <Form-item label="入库数量" prop="quantity">
-                        <Input-number :min="0" v-model="enterForm.quantity" style="width: 100%"></Input-number>
+                        <Input-number :min="0" v-model="modifyForm.quantity" style="width: 100%"></Input-number>
                     </Form-item>
                     <Form-item label="入库日期" prop="date">
-                        <Date-picker type="date" v-model="enterForm.date" style="width: 100%" placement="top"></Date-picker>
+                        <Date-picker type="date" v-model="modifyForm.date" style="width: 100%" placement="top"></Date-picker>
                     </Form-item>
                 </Form>
             </div>
@@ -130,6 +133,17 @@
                     quantity:0,
                     date:new Date()
                 },
+                modifyForm:{
+                    company:'',
+                    person:'',
+                    telphone:'',
+                    name:'',
+                    specification:'',
+                    unit:'',
+                    price:0,
+                    quantity:0,
+                    date:new Date()
+                },
                 enterRules:{
                     company:[
                         {required:true,message:'请填写供应商',trigger:'blur'}
@@ -154,6 +168,7 @@
                     ],
                     quantity:[
                         {required:true,type:'number',message:'请填写入库数量',trigger:'blur'},
+                        {min:0.0000001,type:'number',message:'数量不能为0',trigger:'blur'}
                     ],
                     date:[
                         {required:true,message:'请填写入库时间',trigger:'blur'},
@@ -218,16 +233,32 @@
                 this.menu = name;
                 this.cancel(this.enterForm);
             },
+            selectSupplier:function(index){
+                let form = this.enterForm;
+                form.company = this.$store.state.basicInformation.supplier[index].company;
+                form.person = this.$store.state.basicInformation.supplier[index].person;
+                form.telphone = this.$store.state.basicInformation.supplier[index].telphone;
+            },
+            selectCommodity:function(index){
+                let form = this.enterForm;
+                form.name = this.$store.state.basicInformation.commodity[index].name;
+                form.specification = this.$store.state.basicInformation.commodity[index].specification;
+                form.unit = this.$store.state.basicInformation.commodity[index].unit;
+            },
             save:function(formStr){
                 let vm = this;
+                let form;
+                if(!this.modify){
+                    form = this.enterForm;
+                }else{
+                    form = this.modifyForm;
+                }
                 if(typeof vm.enterForm.date==='object'){vm.enterForm.date = vm.enterForm.date.toDateString();}
-                console.log(1,vm.enterForm.date)
                 this.$refs[formStr].validate(function(valid){
                     if(valid){
-                        console.log(2,vm.enterForm.date)
                         vm.$http.post('/api/saveEnterInventory',{
                             user:vm.$store.state.user,
-                            information:vm.enterForm,
+                            information:form,
                             index:vm.index,
                             modify:vm.modify
                         })
@@ -255,7 +286,9 @@
 							}
 							vm.$store.state.inventoryManagement = res.data.information.inventoryManagement;
 							vm.$store.state.inventoryInformation = res.data.information.inventoryInformation;
-							vm.cancel(vm.enterForm);
+                            form.price = 0;
+                            form.quantity = 0;
+                            form.date = new Date();
                         });
                     }else{
                         vm.$Message.error('请填写完整信息');
@@ -272,11 +305,11 @@
                 this.confirmModifyFlag = true;
                 this.index = index;
                 this.modify = true;
-                this.enterForm = this.$Copy({},this.$store.state.inventoryManagement.enterInventory[index]);
-                delete this.enterForm._id;
+                this.modifyForm = this.$Copy({},this.$store.state.inventoryManagement.enterInventory[index]);
+                delete this.modifyForm._id;
             },
             modifyEnter:function(){
-                this.save('enterForm');
+                this.save('modifyForm');
                 this.confirmModifyFlag = false;
             },
             confirmDel:function(index){

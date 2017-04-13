@@ -27,27 +27,27 @@
 		</Row>
 
 
-		<Row type="flex" justify="center" class="content" v-if="menu==='modify'">
+		<Row type="flex" justify="center" class="content" v-show="menu==='modify'">
 			<Col span="20">
 				<Table highlight-row border :context="self" :columns="columns" :data="$store.state.basicInformation.commodity"></Table>
 			</Col>
 		</Row>
 
-		<Modal v-model="confirmModifyFlag" @on-cancel="cancel(commodityForm)">
+		<Modal v-model="confirmModifyFlag" @on-cancel="cancel(modifyForm)">
 	        <p slot="header" style="color:#3399ff;text-align:center">
 	            <Icon type="edit"></Icon>
 	            <span>修改信息</span>
 	        </p>
 	        <div style="text-align:center">
-	            <Form ref="commodityForm" :model="commodityForm" :rules="commodityRules" :label-width="100">
+	            <Form ref="modifyForm" :model="modifyForm" :rules="commodityRules" :label-width="100">
 		        	<Form-item label="商品名称" prop="name">
-		        		<Input type="text" v-model="commodityForm.name"></Input>
+		        		<Input type="text" v-model="modifyForm.name"></Input>
 		        	</Form-item>
 		        	<Form-item label="商品规格" prop="specification">
-		        		<Input type="text" v-model="commodityForm.specification"></Input>
+		        		<Input type="text" v-model="modifyForm.specification"></Input>
 		        	</Form-item>
 		        	<Form-item label="商品单位" prop="unit">
-		        		<Input type="text" v-model="commodityForm.unit"></Input>
+		        		<Input type="text" v-model="modifyForm.unit"></Input>
 		        	</Form-item>
 				</Form>
 	        </div>
@@ -84,6 +84,11 @@
 				modify:false,
 				index:-1,
 				commodityForm:{
+					name:'',
+					specification:'',
+					unit:''
+				},
+				modifyForm:{
 					name:'',
 					specification:'',
 					unit:''
@@ -136,11 +141,17 @@
 			},
 			save:function(formStr){
 				let vm = this;
+				let form;
+				if(!this.modify){
+                    form = this.commodityForm;
+                }else{
+                    form = this.modifyForm;
+                }
 				this.$refs[formStr].validate(function(valid){
 					if(valid){
 						vm.$http.post('/api/saveCommodity',{
 							user:vm.$store.state.user,
-							commodity:vm.commodityForm,
+							commodity:form,
 							index:vm.index,
 							modify:vm.modify
 						})
@@ -151,7 +162,7 @@
 							}else{
 								vm.$Message.error('商品信息保存失败');
 							}
-							vm.cancel(vm.commodityForm);
+							vm.cancel(form);
 						});
 					}else{
 						vm.$Message.error('请填写完整信息');
@@ -167,11 +178,11 @@
 				this.confirmModifyFlag = true;
 				this.index = index;
 				this.modify = true;
-				this.commodityForm = this.$Copy({},this.$store.state.basicInformation.commodity[index]);
-				delete this.commodityForm._id;
+				this.modifyForm = this.$Copy({},this.$store.state.basicInformation.commodity[index]);
+				delete this.modifyForm._id;
 			},
 			modifyCommodity:function(){
-				this.save('commodityForm');
+				this.save('modifyForm');
 				this.confirmModifyFlag = false;
 			},
 			confirmDel:function(index){

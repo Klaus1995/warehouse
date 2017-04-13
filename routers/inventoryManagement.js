@@ -54,13 +54,13 @@ function save(body,res,type){
 							flag = true;
 							status = 3;
 							break;
-						}else if(inventory[i].number===body.quantity) {
+						}else if(inventory[i].number===body.information.quantity) {
 							position.push(body.information);
 							inventory.splice(i,1);
 							flag = true;
 							status = 3;
 							break;
-						}else if(inventory[i].number<body.quantity){
+						}else if(inventory[i].number<body.information.quantity){
 							flag = true;
 							status = 2;
 							break;

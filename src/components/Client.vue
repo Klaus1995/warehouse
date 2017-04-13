@@ -45,45 +45,45 @@
         </Row>
 
 
-        <Row type="flex" justify="center" class="content" v-if="menu==='modify'">
+        <Row type="flex" justify="center" class="content" v-show="menu==='modify'">
             <Col span="22">
                 <Table highlight-row border :context="self" :columns="columns" :data="$store.state.basicInformation.client"></Table>
             </Col>
         </Row>
 
-        <Modal v-model="confirmModifyFlag" @on-cancel="cancel(clientForm)">
+        <Modal v-model="confirmModifyFlag" @on-cancel="cancel(modifyForm)">
             <p slot="header" style="color:#3399ff;text-align:center">
                 <Icon type="edit"></Icon>
                 <span>修改信息</span>
             </p>
             <div style="text-align:center">
-                <Form ref="clientForm" :model="clientForm" :rules="clientRules" :label-width="100">
+                <Form ref="modifyForm" :model="modifyForm" :rules="clientRules" :label-width="100">
                     <Form-item label="公司名称" prop="company">
-                        <Input type="text" v-model="clientForm.company"></Input>
+                        <Input type="text" v-model="modifyForm.company"></Input>
                     </Form-item>
                     <Form-item label="联系人" prop="person">
-                        <Input type="text" v-model="clientForm.person"></Input>
+                        <Input type="text" v-model="modifyForm.person"></Input>
                     </Form-item>
                     <Form-item label="联系地址" prop="address">
-                        <Input type="text" v-model="clientForm.address"></Input>
+                        <Input type="text" v-model="modifyForm.address"></Input>
                     </Form-item>
                     <Form-item label="城市名称" prop="city">
-                        <Input type="text" v-model="clientForm.city"></Input>
+                        <Input type="text" v-model="modifyForm.city"></Input>
                     </Form-item>
                     <Form-item label="地区名称" prop="area">
-                        <Input type="text" v-model="clientForm.area"></Input>
+                        <Input type="text" v-model="modifyForm.area"></Input>
                     </Form-item>
                     <Form-item label="邮政编码" prop="postcode">
-                        <Input type="text" v-model="clientForm.postcode"></Input>
+                        <Input type="text" v-model="modifyForm.postcode"></Input>
                     </Form-item>
                     <Form-item label="联系电话" prop="telphone">
-                        <Input type="text" v-model="clientForm.telphone"></Input>
+                        <Input type="text" v-model="modifyForm.telphone"></Input>
                     </Form-item>
                     <Form-item label="传真号码" prop="fax">
-                        <Input type="text" v-model="clientForm.fax"></Input>
+                        <Input type="text" v-model="modifyForm.fax"></Input>
                     </Form-item>
                     <Form-item label="公司主页" prop="homepage">
-                        <Input type="text" v-model="clientForm.homepage"></Input>
+                        <Input type="text" v-model="modifyForm.homepage"></Input>
                     </Form-item>
                 </Form>
             </div>
@@ -120,6 +120,17 @@
                 modify:false,
                 index:-1,
                 clientForm:{
+                    company:'',
+                    person:'',
+                    address:'',
+                    city:'',
+                    area:'',
+                    postcode:'',
+                    telphone:'',
+                    fax:'',
+                    homepage:''
+                },
+                modifyForm:{
                     company:'',
                     person:'',
                     address:'',
@@ -220,11 +231,17 @@
             },
             save:function(formStr){
                 let vm = this;
+                let form;
+                if(!this.modify){
+                    form = this.clientForm;
+                }else{
+                    form = this.modifyForm;
+                }
                 this.$refs[formStr].validate(function(valid){
                     if(valid){
                         vm.$http.post('/api/saveClient',{
                             user:vm.$store.state.user,
-                            information:vm.clientForm,
+                            information:form,
                             index:vm.index,
                             modify:vm.modify
                         })
@@ -232,7 +249,7 @@
                             if(res.data.flag){
                                 vm.$Message.success('客户信息保存成功');
                                 vm.$store.state.basicInformation = res.data.information;
-                                vm.cancel(vm.clientForm);
+                                vm.cancel(form);
                             }else{
                                 vm.$Message.error('客户信息保存失败');
                             }
@@ -251,11 +268,11 @@
                 this.confirmModifyFlag = true;
                 this.index = index;
                 this.modify = true;
-                this.clientForm = this.$Copy({},this.$store.state.basicInformation.client[index]);
-                delete this.clientForm._id;
+                this.modifyForm = this.$Copy({},this.$store.state.basicInformation.client[index]);
+                delete this.modifyForm._id;
             },
             modifyClient:function(){
-                this.save('clientForm');
+                this.save('modifyForm');
                 this.confirmModifyFlag = false;
             },
             confirmDel:function(index){
