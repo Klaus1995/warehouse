@@ -25,7 +25,7 @@
 * body-parser
 * mongoDB
 * mongoose
-##使用方法
+## 使用方法
 默认已经安装node、mongoDB并且已经配置好。
 在项目根目录下打开命令行。
 
