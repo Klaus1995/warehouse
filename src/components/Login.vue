@@ -11,7 +11,10 @@
                     </Form-item>
                     <Form-item>
                         <Row type="flex" justify="center">
-                            <Col span="8">
+                            <Col span="10">
+                                <Button @click="$router.push('/Register')" long>注册</Button>
+                            </Col>
+                            <Col span="10" offset="2">
                                 <Button @click="login('loginForm')" type="primary" long>登录</Button>
                             </Col>
                         </Row>
@@ -56,6 +59,7 @@
                                 vm.$store.state.inventoryInformation = res.data.information.inventoryInformation;
                                 vm.$store.state.inventoryManagement = res.data.information.inventoryManagement;
                                 vm.$store.state.basicInformation = res.data.information.basicInformation;
+                                vm.$router.push('/About');
                             }else if(!res.data.flag&&!res.data.err){
                                 vm.$Message.error('登录失败,密码错误');
                             }else {

@@ -11,7 +11,10 @@
                     </Form-item>
                     <Form-item>
                         <Row type="flex" justify="center">
-                            <Col span="8">
+                            <Col span="10">
+                                <Button @click="$router.push('/')" long>登录</Button>
+                            </Col>
+                            <Col span="10" offset="2">
                                 <Button @click="register('registerForm')" type="primary" long>注册</Button>
                             </Col>
                         </Row>
