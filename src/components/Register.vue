@@ -2,7 +2,8 @@
 	<div class="center">        
         <Row type="flex" justify="center">
             <Col span="5">
-               <Form ref="registerForm" :model="registerForm" :rules="registerRules">
+                <h1>注册</h1>
+                <Form ref="registerForm" :model="registerForm" :rules="registerRules">
                     <Form-item prop="user">
                         <Input type="text" v-model="registerForm.user" placeholder="账号"></Input>
                     </Form-item>
@@ -73,5 +74,8 @@
     .center{
         position: relative;
         top: 150px;
+    }
+    h1{
+        text-align: center;
     }
 </style>
